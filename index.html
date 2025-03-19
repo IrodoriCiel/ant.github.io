@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla con Búsqueda y Checkboxes</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding-top: 80px;
+            overflow-x: hidden;
+        }
+
+        .search-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #007BFF;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            padding-right: 35px;
+            box-sizing: border-box;
+        }
+
+        .clear-btn {
+            position: absolute;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #fff;
+            display: none;
+        }
+
+        .menu-btn {
+            font-size: 30px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 15px;
+            display: none;
+        }
+
+        .menu-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            transition: 0.3s;
+            z-index: 9999;
+            display: none;
+            padding-top: 60px;
+        }
+
+        .menu-content {
+            background-color: #007BFF;
+            color: white;
+            width: 100%;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+
+        .menu-content label {
+            font-size: 18px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .menu-content input[type="checkbox"] {
+            margin-right: 15px;
+            transform: scale(1.5);
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .menu-content a {
+            color: white;
+            font-size: 18px;
+            padding: 10px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .menu-close-btn {
+            font-size: 30px;
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            max-width: 100%;
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+            font-size: 15px;
+            word-wrap: break-word;
+            max-width: 200px; /* Limitar el ancho máximo de las celdas */
+            white-space: normal; /* Permite el ajuste de las palabras */
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tbody tr:hover {
+            background-color: #d4eaff;
+            transition: 0.3s;
+        }
+
+        /* Estilo para el slide button */
+        .slider-container {
+            margin-top: 10px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .slider-container input {
+            width: 40px; /* Reduce el tamaño del slider */
+            height: 20px; /* Reduce el tamaño del slider */
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: #ccc;
+            border-radius: 50px;
+            position: relative;
+            transition: 0.4s;
+        }
+
+        .slider-container input:checked {
+            background-color: #4CAF50;
+        }
+
+        .slider-container input:before {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px; /* Ajuste al tamaño pequeño */
+            height: 16px; /* Ajuste al tamaño pequeño */
+            border-radius: 50%;
+            background-color: white;
+            transition: 0.4s;
+        }
+
+        .slider-container input:checked:before {
+            left: 20px; /* Ajuste para la posición al estar activado */
+        }
+
+        .slider-container label {
+            font-size: 12px; /* Leyenda más pequeña */
+            margin-top: 5px;
+            display: block;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            input {
+                font-size: 14px;
+            }
+
+            th, td {
+                font-size: 13px;
+                padding: 8px;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .search-container {
+                justify-content: flex-start;
+            }
+
+            .menu-content {
+                padding: 10px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .menu-content label {
+                font-size: 16px;
+                padding: 8px;
+            }
+
+            .menu-close-btn {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="search-container">
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <input type="text" id="search" placeholder="🔍 Buscar por nombre o cargo..." onkeyup="filterTable()">
+    <button class="clear-btn" onclick="clearSearch()">✖</button>
+</div>
+
+<!-- Slider dentro de la sección azul -->
+<div class="slider-container">
+    <label for="sortSwitch">Ordenar por Total de meses (Mayor a Menor):</label>
+    <input type="checkbox" id="sortSwitch" onchange="sortTable()">
+</div>
+
+<div id="menu" class="menu-container">
+    <div class="menu-content">
+        <button class="menu-close-btn" onclick="toggleMenu()">✖</button>
+        <label><input type="checkbox" checked onchange="toggleColumn(0)"> Cargo</label>
+        <label><input type="checkbox" checked onchange="toggleColumn(1)"> Nombre</label>
+        <label><input type="checkbox" checked onchange="toggleColumn(2)"> Años</label>
+        <label><input type="checkbox" checked onchange="toggleColumn(3)"> Meses</label>
+        <label><input type="checkbox" checked onchange="toggleColumn(4)"> Total de meses</label>
+    </div>
+</div>
+
+<div class="table-container">
+    <table id="data-table">
+        <thead>
+        <tr>
+            <th>Denominación del cargo</th>
+            <th>Nombre Completo</th>
+            <th>Años</th>
+            <th>Meses</th>
+            <th>Total de meses</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Datos serán insertados aquí -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    let jsonData = [];
+    let sortedAscending = true;
+
+    async function loadJson() {
+        try {
+            const response = await fetch("data.json");
+            jsonData = await response.json();
+            loadTable();
+        } catch (error) {
+            console.error("Error cargando el JSON:", error);
+        }
+    }
+
+    function calcularTiempo(ingreso) {
+        const [dia, mes, año] = ingreso.split("/").map(Number);
+        const fechaIngreso = new Date(año, mes - 1, dia);
+        const fechaActual = new Date();
+
+        let años = fechaActual.getFullYear() - fechaIngreso.getFullYear();
+        let meses = fechaActual.getMonth() - fechaIngreso.getMonth();
+
+        if (meses < 0 || (meses === 0 && fechaActual.getDate() < fechaIngreso.getDate())) {
+            años--;
+            meses += 12;
+        }
+
+        const totalMeses = (años * 12) + meses;
+        return { años, meses, totalMeses };
+    }
+
+    function loadTable() {
+        const tableBody = document.querySelector("#data-table tbody");
+        tableBody.innerHTML = "";
+
+        jsonData.forEach(item => {
+            const { años, meses, totalMeses } = calcularTiempo(item["Ingreso"]);
+
+            let row = document.createElement("tr");
+            row.innerHTML = `<td>${item["Denominación del cargo"]}</td>
+                                 <td>${item["Nombre Completo"]}</td>
+                                 <td>${años}</td>
+                                 <td>${meses}</td>
+                                 <td>${totalMeses}</td>`;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function filterTable() {
+        const searchInput = document.getElementById("search");
+        const searchValue = searchInput.value.toLowerCase();
+        const rows = document.querySelectorAll("#data-table tbody tr");
+        const clearBtn = document.querySelector(".clear-btn");
+
+        const searchTerms = searchValue.split(",").map(term => term.trim()).filter(term => term.length > 0);
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+
+            const match = searchTerms.every(term => text.includes(term));
+
+            row.style.display = match ? "" : "none";
+        });
+
+        clearBtn.style.display = searchValue ? "block" : "none";
+    }
+
+    function clearSearch() {
+        document.getElementById("search").value = "";
+        filterTable();
+    }
+
+    function sortTable() {
+        const sortSwitch = document.getElementById("sortSwitch");
+        sortedAscending = !sortSwitch.checked;
+
+        jsonData.sort((a, b) => {
+            const { totalMeses: totalA } = calcularTiempo(a["Ingreso"]);
+            const { totalMeses: totalB } = calcularTiempo(b["Ingreso"]);
+            return sortedAscending ? totalA - totalB : totalB - totalA;
+        });
+
+        loadTable();
+    }
+
+    function toggleColumn(index) {
+        const table = document.getElementById("data-table");
+        const rows = table.querySelectorAll("tr");
+
+        rows.forEach(row => {
+            let cells = row.children;
+            if (cells[index]) {
+                cells[index].style.display = cells[index].style.display === "none" ? "" : "none";
+            }
+        });
+    }
+
+    function toggleMenu() {
+        const menu = document.getElementById("menu");
+        menu.style.display = menu.style.display === "none" || menu.style.display === "" ? "block" : "none";
+    }
+
+    loadJson();
+</script>
+
+</body>
+</html>
